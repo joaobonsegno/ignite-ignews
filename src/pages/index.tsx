@@ -1,10 +1,20 @@
+import { GetStaticProps } from 'next';
 import Head from 'next/Head';
 import Image from 'next/image';
 import avatarImg from '../assets/images/avatar.svg';
 import SubscribeButton from '../components/SubscribeButton';
+import { stripe } from '../services/stripe';
 import styles from './home.module.scss';
 
-export default function Home() {
+type HomeProps = {
+    product: {
+        priceId: string;
+        amount: number;
+    }
+}
+
+export default function Home({ product }: HomeProps) {
+
     return (
         <>
             <Head>
@@ -17,7 +27,12 @@ export default function Home() {
                     <h1>News about the <strong>React</strong> world.</h1>
                     <p>
                         Get access to all the publications <br/>
-                        <strong>for $9.90 month</strong>
+                        <strong>
+                            for {new Intl.NumberFormat('en-US', {
+                                style: 'currency',
+                                currency: 'USD'
+                            }).format(product.amount)} month
+                        </strong>
                     </p>
                     <SubscribeButton />
                 </section>
@@ -26,4 +41,22 @@ export default function Home() {
             </main>
         </>
     );
+}
+
+export const getStaticProps: GetStaticProps = async () => {
+    const price = await stripe.prices.retrieve('price_1JrYlkEcXGhtUhLcLbGE4Zl8', {
+        expand: ['product']
+    });
+
+    const product = {
+        priceId: price.id,
+        amount: price.unit_amount / 100
+    }
+
+    return {
+        props: {
+            product
+        },
+        revalidate: 60 * 60 * 24 // 24 hours
+    };
 }
