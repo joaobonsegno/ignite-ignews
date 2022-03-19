@@ -17,9 +17,7 @@ export function Header() {
                         <a>Posts</a>
                     </nav>
                 </div>
-                <SignInButton>
-                    Sign in with Github
-                </SignInButton>
+                <SignInButton />
             </div>
         </header>
     );

@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 260px;
+    height: 4rem;
+
+    background: var(--yellow-500);
+    color: var(--gray-900);
+    border: none;
+
+    border-radius: 999px;
+    font-size: 1.25rem;
+    font-weight: bold;
+
+    transition: filter 0.4s;
+
+    &:hover {
+        filter: brightness(0.8);
+    }
+}
