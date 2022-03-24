@@ -2,10 +2,18 @@ import styles from './styles.module.scss';
 import { FaGithub } from 'react-icons/fa';
 import { FiX } from 'react-icons/fi';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import Image from 'next/image';
+import { useState } from 'react';
+import { Loading } from 'components/Loading';
 
 export function SignInButton() {
     const { status, data } = useSession();
+    const [loading, setLoading] = useState(false);
+
+    async function handleSignIn() {
+        setLoading(true);
+        await signIn('github');
+        setLoading(false);
+    }
 
     return status === 'authenticated' ? (
         <button 
@@ -26,9 +34,14 @@ export function SignInButton() {
         <button 
             type="button" 
             className={styles.signInButtonContainer}
-            onClick={() => signIn('github')}
+            onClick={handleSignIn}
+            disabled={loading}
         >
-            <FaGithub color="var(--yellow-500)" />
+            {!loading ? (
+                <FaGithub color="var(--yellow-500)" />
+            ) : (
+                <Loading />
+            )}
             Sign in with Github
         </button>
     );
